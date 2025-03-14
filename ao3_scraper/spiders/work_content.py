@@ -26,7 +26,7 @@ class WorkContentSpider(scrapy.Spider):
                 f"""
                 SELECT distinct link
                 FROM ao3_scraper.works
-                WHERE 
+                WHERE
                     kudos > {self.KUDOS_THRESHOLD}
                     -- the work has been updated AFTER the content html was scraped
                     -- OR the work html hasn't been scraped at all
@@ -34,7 +34,7 @@ class WorkContentSpider(scrapy.Spider):
                         work_last_update > _work_content_html_scraped_at
                         OR work_content_html IS NULL
                     )
-                """
+                 """
             )
         )
 
@@ -113,7 +113,7 @@ class WorkContentSpider(scrapy.Spider):
         loader.add_value("work_link", work_link)
         loader.add_value("published_at", published_at)
         loader.add_value("download_links", json.dumps(download_link_values))
-        loader.add_value("work_content_html", response.body)
+        loader.add_value("work_content_html", response.text)
 
         # make sure these are loading properly
         # the works output processor is also only returning a single fandom/optional_tags etc. no good
