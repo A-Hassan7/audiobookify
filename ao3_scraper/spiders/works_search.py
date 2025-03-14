@@ -84,12 +84,14 @@ class WorksSpider(scrapy.Spider):
         # this is faster than following the next page link since I can create the requests in bulk here for every page
         for page in range(1, 5001):
 
-            params["page"] = str(page)
+            # prevent modifying the original params dict since this messes up other requests running asynchronously
+            params_copy = params.copy()
+            params_copy["page"] = str(page)
             yield scrapy.FormRequest(
                 url="https://archiveofourown.org/works/search",
                 method="GET",
                 headers=headers,
-                formdata=params,
+                formdata=params_copy,
                 callback=self.parse_works,
                 errback=self.handle_error,
                 cb_kwargs={"page": page},
